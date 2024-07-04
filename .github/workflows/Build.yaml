@@ -24,6 +24,10 @@ jobs:
       id-token: write
       attestations: write
 
+    outputs:
+      IMAGE_DIGEST: ${{ steps.build.outputs.IMAGE_DIGEST }}
+      GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,6 +42,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build ${{ github.event.inputs.name }}
+        id: build
         run: |
           cd $GITHUB_WORKSPACE
 
@@ -46,12 +51,14 @@ jobs:
           podman build --no-cache --format docker -t $GITHUB_REPOSITORY:$name ./$name/
           podman tag $GITHUB_REPOSITORY:$name $REGISTRY/$GITHUB_REPOSITORY:$name
           podman push $REGISTRY/$GITHUB_REPOSITORY:$name
-          
+
           export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
+
+          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> $GITHUB_OUTPUT
       - name: Attest
         uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ github.event.inputs.name }}
-          subject-digest: ${{ env.IMAGE_DIGEST }}
+          subject-name: ${{ env.REGISTRY }}/${{ needs.build.outputs.GITHUB_REPOSITORY }}:${{ github.event.inputs.name }}
+          subject-digest: ${{ needs.build.outputs.IMAGE_DIGEST }}
           push-to-registry: true
