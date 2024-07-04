@@ -1,3 +1,3 @@
 FROM alpine
 
-RUN echo "5"
+RUN echo "6"

@@ -45,4 +45,11 @@ jobs:
 
           podman build --no-cache --format docker -t $GITHUB_REPOSITORY:$name ./$name/
           
-          podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name
+          export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-name: ${{ env.REGISTRY }}/$GITHUB_REPOSITORY:${{ github.event.inputs.name }}
+          subject-digest: ${{ env.IMAGE_DIGEST }}
+          push-to-registry: true
