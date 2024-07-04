@@ -54,6 +54,10 @@ jobs:
           export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
 
           echo "digest=$IMAGE_DIGEST" >> "$GITHUB_OUTPUT"
+          
+          echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
+          
+          echo $IMAGE_DIGEST
       - name: Test
         run: |
           cd $GITHUB_WORKSPACE
