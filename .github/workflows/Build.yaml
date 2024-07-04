@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Name of the build'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build
+        run: |
+          echo "Building..."
+          echo ${{ github.event.inputs.name }}

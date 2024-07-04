@@ -12,10 +12,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,5 +35,7 @@ jobs:
 
             if [ -e "$name/Dockerfile" ]; then
               echo "Building $name"
+
+              gh workflow run Build.yaml -f name=$name
             fi
           done
