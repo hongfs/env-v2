@@ -25,6 +25,8 @@ jobs:
       - name: Build
         run: |
           cd $GITHUB_WORKSPACE
+          
+          echo "Starting build"
 
           for name in $(git diff --name-only HEAD^ HEAD | awk -F/ '{print $1}' | sort -u); do
             if [[ $name == .* ]]; then
