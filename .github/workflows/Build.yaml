@@ -44,5 +44,5 @@ jobs:
           name=${{ github.event.inputs.name }}
 
           podman build --no-cache --format docker -t $GITHUB_REPOSITORY:$name ./$name/
-
-          podman inspect $GITHUB_REPOSITORY:$name
+          
+          podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name
