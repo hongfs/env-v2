@@ -1,3 +1,3 @@
 FROM alpine
 
-RUN echo "17"
+RUN echo "18"
