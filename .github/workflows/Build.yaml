@@ -45,7 +45,7 @@ jobs:
         with:
           context: ./${{ github.event.inputs.name }}
           push: false
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.name }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.inputs.name }}
 
 #      - name: Build ${{ github.event.inputs.name }}
 #        id: build
