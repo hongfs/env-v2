@@ -19,6 +19,8 @@ jobs:
           fetch-depth: 2
 
       - name: Build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           
