@@ -21,6 +21,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout repository
@@ -35,10 +37,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build ${{ github.event.inputs.name }}
         run: |
           cd $GITHUB_WORKSPACE
 
           name=${{ github.event.inputs.name }}
 
           podman build --no-cache --format docker -t $GITHUB_REPOSITORY:$name ./$name/
+
+          podman inspect $GITHUB_REPOSITORY:$name
