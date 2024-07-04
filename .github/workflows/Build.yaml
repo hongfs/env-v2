@@ -54,6 +54,11 @@ jobs:
           export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
 
           echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> "$GITHUB_OUTPUT"
+      - name: Test
+        run: |
+          cd $GITHUB_WORKSPACE
+          
+          echo ${{ needs.run.outputs.IMAGE_DIGEST }}
       - name: Attest
         uses: actions/attest-build-provenance@v1
         id: attest
