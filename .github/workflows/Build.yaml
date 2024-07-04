@@ -41,41 +41,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: ./${{ github.event.inputs.name }}
-          push: false
+          push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.inputs.name }}
 
-#      - name: Build ${{ github.event.inputs.name }}
-#        id: build
-#        run: |
-#          cd $GITHUB_WORKSPACE
-#
-#          name=${{ github.event.inputs.name }}
-#
-#          podman build --no-cache --format docker -t $GITHUB_REPOSITORY:$name ./$name/
-#          podman tag $GITHUB_REPOSITORY:$name $REGISTRY/$GITHUB_REPOSITORY:$name
-#          podman push $REGISTRY/$GITHUB_REPOSITORY:$name
-#
-#          export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $REGISTRY/$GITHUB_REPOSITORY:$name)
-#
-#          echo "digest=$IMAGE_DIGEST" >> "$GITHUB_OUTPUT"
-#
-#          echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
-#
-#          echo $IMAGE_DIGEST
-      - name: Test
-        run: |
-          cd $GITHUB_WORKSPACE
-          
-          docker image ls
-          
-#          echo ${{ needs.run.outputs.IMAGE_DIGEST }}
-#      - name: Attest
-#        uses: actions/attest-build-provenance@v1
-#        id: attest
-#        with:
-#          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}
-#          subject-digest: ${{ env.IMAGE_DIGEST }}
-#          push-to-registry: true
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
