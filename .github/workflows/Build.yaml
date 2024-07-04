@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -53,11 +53,13 @@ jobs:
 
           export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
 
-          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> $GITHUB_OUTPUT
+          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> "$GITHUB_OUTPUT"
       - name: Attest
         uses: actions/attest-build-provenance@v1
         id: attest
+        env:
+          IMAGE_DIGEST: ${{ needs.run.outputs.IMAGE_DIGEST }}
         with:
           subject-name: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.inputs.name }}
-          subject-digest: 111
+          subject-digest: ${{ env.IMAGE_DIGEST }}
           push-to-registry: true
