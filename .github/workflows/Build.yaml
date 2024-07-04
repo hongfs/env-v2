@@ -26,7 +26,6 @@ jobs:
 
     outputs:
       IMAGE_DIGEST: ${{ steps.build.outputs.IMAGE_DIGEST }}
-      GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
 
     steps:
       - name: Checkout repository
@@ -59,6 +58,6 @@ jobs:
         uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ needs.build.outputs.GITHUB_REPOSITORY }}:${{ github.event.inputs.name }}
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.inputs.name }}
           subject-digest: ${{ needs.build.outputs.IMAGE_DIGEST }}
           push-to-registry: true
