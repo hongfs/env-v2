@@ -25,7 +25,7 @@ jobs:
       attestations: write
 
     outputs:
-      IMAGE_DIGEST: ${{ steps.build.outputs.IMAGE_DIGEST }}
+      IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
 
     steps:
       - name: Checkout repository
@@ -53,7 +53,7 @@ jobs:
 
           export IMAGE_DIGEST=$(podman inspect --format '{{.Digest}}' $GITHUB_REPOSITORY:$name)
 
-          echo "IMAGE_DIGEST=${IMAGE_DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "digest=$IMAGE_DIGEST" >> "$GITHUB_OUTPUT"
       - name: Test
         run: |
           cd $GITHUB_WORKSPACE
